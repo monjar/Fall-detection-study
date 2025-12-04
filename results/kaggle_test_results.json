@@ -1,0 +1,31 @@
+{
+  "threshold": 4.9313249588012695,
+  "num_fall_samples": 3140,
+  "num_no_fall_samples": 3848,
+  "accuracy": 0.615626788780767,
+  "precision": 0.6984265734265734,
+  "recall": 0.25445859872611465,
+  "f1_score": 0.373015873015873,
+  "roc_auc": 0.5837203460810149,
+  "confusion_matrix": [
+    [
+      3503,
+      345
+    ],
+    [
+      2341,
+      799
+    ]
+  ],
+  "fall_error_mean": 3.986471860243636,
+  "fall_error_std": 2.298093975423293,
+  "no_fall_error_mean": 3.278181753719609,
+  "no_fall_error_std": 1.5945436599172886,
+  "optimal_threshold": 0.8811218569977115,
+  "optimal_metrics": {
+    "accuracy": 0.4574985689753864,
+    "precision": 0.4525164113785558,
+    "recall": 0.9878980891719745,
+    "f1": 0.6207103551775888
+  }
+}
