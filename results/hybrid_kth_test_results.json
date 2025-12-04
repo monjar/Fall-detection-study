@@ -1,0 +1,53 @@
+{
+  "checkpoint": "models/checkpoints/hybrid_fall_detector.pt",
+  "method": "hybrid_kth_only",
+  "test_samples": 6959,
+  "fall_samples": 3127,
+  "no_fall_samples": 3832,
+  "failed_samples": 29,
+  "reconstruction_errors": {
+    "overall": {
+      "mean": 3.6515220153484216,
+      "median": 3.3269054889678955,
+      "std": 1.9456214921659125
+    },
+    "fall": {
+      "mean": 4.0133656027753934,
+      "median": 3.532804250717163
+    },
+    "no_fall": {
+      "mean": 3.35624933844755,
+      "median": 3.232052206993103
+    }
+  },
+  "metrics": {
+    "accuracy": 0.4638597499640753,
+    "precision": 0.45472263868065965,
+    "recall": 0.9699392388871122,
+    "f1_score": 0.6191691334081861,
+    "sensitivity": 0.9699392388871122,
+    "specificity": 0.050887265135699376,
+    "ppv": 0.45472263868065965,
+    "npv": 0.6747404844290658,
+    "roc_auc": 0.45024194953643026,
+    "average_precision": 0.4391656588123224
+  },
+  "per_class": {
+    "no_fall": {
+      "precision": 0.6747404844290658,
+      "recall": 0.050887265135699376,
+      "f1_score": 0.0946372239747634
+    },
+    "fall": {
+      "precision": 0.45472263868065965,
+      "recall": 0.9699392388871122,
+      "f1_score": 0.6191691334081861
+    }
+  },
+  "confusion_matrix": {
+    "tn": 195,
+    "fp": 3637,
+    "fn": 94,
+    "tp": 3033
+  }
+}
