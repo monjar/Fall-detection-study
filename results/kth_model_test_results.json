@@ -1,0 +1,58 @@
+{
+  "checkpoint": "models/checkpoints/pose_autoencoder.pt",
+  "method": "anomaly_detection",
+  "threshold": 0.8191475913380132,
+  "test_samples": 6959,
+  "fall_samples": 3127,
+  "no_fall_samples": 3832,
+  "failed_samples": 29,
+  "error_statistics": {
+    "overall": {
+      "mean": 3.5164331598072187,
+      "median": 3.2434043884277344,
+      "std": 1.9201717057543954,
+      "min": 0.4333181083202362,
+      "max": 19.531877517700195
+    },
+    "fall": {
+      "mean": 3.8444108997799544,
+      "median": 3.392759084701538,
+      "std": 2.2482108258908577
+    },
+    "no_fall": {
+      "mean": 3.2487957921415753,
+      "median": 3.1870930194854736,
+      "std": 1.5530057332357399
+    }
+  },
+  "metrics": {
+    "accuracy": 0.45581261675528095,
+    "precision": 0.45195107746068724,
+    "recall": 0.9926447073872722,
+    "f1_score": 0.6211105552776388,
+    "sensitivity": 0.9926447073872722,
+    "specificity": 0.017745302713987474,
+    "ppv": 0.45195107746068724,
+    "npv": 0.7472527472527473,
+    "roc_auc": 0.5624088266181877,
+    "average_precision": 0.5546013415143802
+  },
+  "per_class": {
+    "no_fall": {
+      "precision": 0.7472527472527473,
+      "recall": 0.017745302713987474,
+      "f1_score": 0.034667346418557225
+    },
+    "fall": {
+      "precision": 0.45195107746068724,
+      "recall": 0.9926447073872722,
+      "f1_score": 0.6211105552776388
+    }
+  },
+  "confusion_matrix": {
+    "tn": 68,
+    "fp": 3764,
+    "fn": 23,
+    "tp": 3104
+  }
+}
