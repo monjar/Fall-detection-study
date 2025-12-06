@@ -1,0 +1,17 @@
+{
+  "voting_strategy": "weighted",
+  "weights": {
+    "physics": 0.3,
+    "temporal": 0.25,
+    "geometry": 0.2,
+    "neural": 0.15,
+    "anomaly": 0.1
+  },
+  "sequence_length": 64,
+  "neural_model_path": null,
+  "detectors": [
+    "physics",
+    "temporal",
+    "geometry"
+  ]
+}
