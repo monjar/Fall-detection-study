@@ -28,16 +28,19 @@ class PhysicsBasedDetector:
     """
     Physics-based fall detection using biomechanical rules.
     No learning - pure physics thresholds.
+    
+    Note: Thresholds are calibrated for normalized keypoints (centered and scaled
+    by shoulder width), where coordinates typically range from -5 to +5.
     """
     
     def __init__(self, 
-                 velocity_threshold: float = -0.3,
-                 angle_threshold: float = 45.0,
-                 height_drop_threshold: float = 0.2,
-                 aspect_ratio_threshold: float = 2.0):
+                 velocity_threshold: float = 0.5,  # Adjusted for normalized coords
+                 angle_threshold: float = 60.0,     # More lenient for normal motion
+                 height_drop_threshold: float = 0.3,
+                 aspect_ratio_threshold: float = 3.0):  # Adjusted for normalized coords
         """
         Args:
-            velocity_threshold: Max vertical velocity (negative = downward)
+            velocity_threshold: Max vertical velocity (positive = downward in image)
             angle_threshold: Max body angle from vertical (degrees)
             height_drop_threshold: Min height drop ratio
             aspect_ratio_threshold: Min width/height ratio
@@ -134,10 +137,10 @@ class PhysicsBasedDetector:
         fall_indicators = 0
         confidence_scores = []
         
-        # Check velocity
-        if features['max_velocity'] > -self.velocity_threshold:
+        # Check velocity (positive = downward motion in image coordinates)
+        if features['max_velocity'] > self.velocity_threshold:
             fall_indicators += 1
-            confidence_scores.append(min(features['max_velocity'] / (-self.velocity_threshold), 1.0))
+            confidence_scores.append(min(features['max_velocity'] / self.velocity_threshold, 1.0))
         
         # Check angle
         if features['max_angle'] > self.angle_threshold:

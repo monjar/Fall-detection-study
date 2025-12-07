@@ -1,0 +1,11 @@
+{
+  "success": true,
+  "filename": "20251207_175037_S_D_0058.mp4",
+  "model": "kth_neural",
+  "model_name": "KTH Neural (Improved Hybrid)",
+  "prediction": 1,
+  "label": "FALL DETECTED",
+  "confidence": 0.9950279593467712,
+  "device": "cpu",
+  "timestamp": "2025-12-07T17:51:56.279056"
+}

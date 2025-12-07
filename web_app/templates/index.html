@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fall Detection System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .upload-section {
+            border: 3px dashed #667eea;
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #f8f9ff;
+        }
+
+        .upload-section:hover {
+            border-color: #764ba2;
+            background: #f0f1ff;
+        }
+
+        .upload-section.dragging {
+            border-color: #764ba2;
+            background: #e8e9ff;
+            transform: scale(1.02);
+        }
+
+        .upload-icon {
+            font-size: 3em;
+            margin-bottom: 10px;
+            color: #667eea;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+        }
+
+        .btn-secondary:hover {
+            box-shadow: 0 5px 15px rgba(108, 117, 125, 0.4);
+        }
+
+        .model-selection {
+            margin: 20px 0;
+        }
+
+        .model-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .model-option {
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .model-option:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+
+        .model-option.selected {
+            border-color: #667eea;
+            background: #f0f1ff;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .model-option input[type="radio"] {
+            margin-right: 8px;
+        }
+
+        .model-name {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .model-description {
+            font-size: 0.85em;
+            color: #666;
+        }
+
+        .file-info {
+            background: #f8f9ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: none;
+        }
+
+        .file-info.show {
+            display: block;
+        }
+
+        .file-name {
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .file-size {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .progress-section {
+            display: none;
+            margin: 20px 0;
+        }
+
+        .progress-section.show {
+            display: block;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: #f0f0f0;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        .progress-text {
+            text-align: center;
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .results-section {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .results-section.show {
+            display: block;
+        }
+
+        .result-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .result-label {
+            font-size: 2em;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+
+        .result-label.fall {
+            color: #ff6b6b;
+        }
+
+        .result-label.no-fall {
+            color: #51cf66;
+        }
+
+        .confidence-meter {
+            margin: 20px 0;
+        }
+
+        .confidence-value {
+            font-size: 3em;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .confidence-label {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .confidence-bar {
+            width: 100%;
+            height: 20px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .confidence-bar-fill {
+            height: 100%;
+            background: white;
+            transition: width 0.5s ease;
+            border-radius: 10px;
+        }
+
+        .individual-results {
+            background: white;
+            color: #333;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .individual-results h3 {
+            margin-bottom: 15px;
+            color: #667eea;
+        }
+
+        .detector-result {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            margin: 10px 0;
+            background: #f8f9ff;
+            border-radius: 8px;
+        }
+
+        .detector-name {
+            font-weight: 600;
+        }
+
+        .detector-confidence {
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .badge.fall {
+            background: #ffe0e0;
+            color: #c92a2a;
+        }
+
+        .badge.no-fall {
+            background: #d3f9d8;
+            color: #2b8a3e;
+        }
+
+        .error-message {
+            background: #ffe0e0;
+            color: #c92a2a;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .spinner {
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top: 3px solid white;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+            display: none;
+        }
+
+        .spinner.show {
+            display: block;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .info-section {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .info-section h3 {
+            margin-bottom: 10px;
+        }
+
+        .info-section ul {
+            list-style-position: inside;
+            line-height: 1.8;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+
+            .model-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏥 Fall Detection System</h1>
+            <p class="subtitle">Upload a video to detect falls using AI models</p>
+        </header>
+
+        <div class="card">
+            <!-- Upload Section -->
+            <div class="upload-section" id="uploadSection" onclick="document.getElementById('videoInput').click()">
+                <div class="upload-icon">📹</div>
+                <h3>Click or Drag & Drop to Upload Video</h3>
+                <p>Supported formats: MP4, AVI, MOV, MKV, WEBM (Max 500MB)</p>
+                <input type="file" id="videoInput" class="file-input" accept="video/*">
+            </div>
+
+            <!-- File Info -->
+            <div class="file-info" id="fileInfo">
+                <div class="file-name" id="fileName"></div>
+                <div class="file-size" id="fileSize"></div>
+            </div>
+
+            <!-- Error Message -->
+            <div class="error-message" id="errorMessage"></div>
+
+            <!-- Model Selection -->
+            <div class="model-selection" id="modelSelection">
+                <h3>Select Detection Model</h3>
+                <div class="model-grid" id="modelGrid">
+                    <!-- Models will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="actions">
+                <button class="btn" id="detectBtn" onclick="detectFall()" disabled>
+                    🔍 Analyze Video
+                </button>
+                <button class="btn btn-secondary" id="resetBtn" onclick="resetForm()" style="display: none;">
+                    🔄 Analyze Another Video
+                </button>
+            </div>
+
+            <!-- Progress Section -->
+            <div class="progress-section" id="progressSection">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill">0%</div>
+                </div>
+                <div class="progress-text" id="progressText">Initializing...</div>
+                <div class="spinner show"></div>
+            </div>
+
+            <!-- Results Section -->
+            <div class="results-section" id="resultsSection">
+                <div class="result-card">
+                    <div class="result-label" id="resultLabel">NO FALL</div>
+                    <div class="confidence-meter">
+                        <div class="confidence-value" id="confidenceValue">0%</div>
+                        <div class="confidence-label">Confidence Level</div>
+                        <div class="confidence-bar">
+                            <div class="confidence-bar-fill" id="confidenceBarFill"></div>
+                        </div>
+                    </div>
+                    <div style="margin-top: 20px; opacity: 0.9;">
+                        Model: <strong id="modelUsed"></strong>
+                    </div>
+                </div>
+
+                <!-- Individual Results (for ensemble) -->
+                <div class="individual-results" id="individualResults" style="display: none;">
+                    <h3>Individual Detector Results</h3>
+                    <div id="detectorResults"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Info Section -->
+        <div class="info-section">
+            <h3>ℹ️ About the Models</h3>
+            <ul>
+                <li><strong>Ensemble Detector:</strong> Combines multiple detection methods for robust performance</li>
+                <li><strong>KTH Neural:</strong> LSTM-based deep learning model trained on KTH dataset</li>
+                <li><strong>Physics-Based:</strong> Uses biomechanical rules and motion analysis</li>
+                <li><strong>Temporal Pattern:</strong> Analyzes motion patterns over time</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        let uploadedFilename = null;
+        let selectedModel = 'ensemble';
+
+        // Load available models
+        async function loadModels() {
+            try {
+                const response = await fetch('/api/models');
+                const models = await response.json();
+                
+                const modelGrid = document.getElementById('modelGrid');
+                modelGrid.innerHTML = '';
+                
+                models.forEach((model, index) => {
+                    const div = document.createElement('div');
+                    div.className = 'model-option' + (index === 0 ? ' selected' : '');
+                    div.onclick = () => selectModel(model.id, div);
+                    
+                    div.innerHTML = `
+                        <input type="radio" name="model" value="${model.id}" ${index === 0 ? 'checked' : ''}>
+                        <div class="model-name">${model.name}</div>
+                        <div class="model-description">${model.description}</div>
+                    `;
+                    
+                    modelGrid.appendChild(div);
+                });
+                
+                if (models.length > 0) {
+                    selectedModel = models[0].id;
+                }
+            } catch (error) {
+                showError('Failed to load models: ' + error.message);
+            }
+        }
+
+        // Select model
+        function selectModel(modelId, element) {
+            selectedModel = modelId;
+            
+            // Update UI
+            document.querySelectorAll('.model-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            element.classList.add('selected');
+            element.querySelector('input').checked = true;
+        }
+
+        // File input handler
+        document.getElementById('videoInput').addEventListener('change', handleFileSelect);
+
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (file) {
+                uploadFile(file);
+            }
+        }
+
+        // Drag and drop
+        const uploadSection = document.getElementById('uploadSection');
+
+        uploadSection.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadSection.classList.add('dragging');
+        });
+
+        uploadSection.addEventListener('dragleave', () => {
+            uploadSection.classList.remove('dragging');
+        });
+
+        uploadSection.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadSection.classList.remove('dragging');
+            
+            const file = e.dataTransfer.files[0];
+            if (file) {
+                uploadFile(file);
+            }
+        });
+
+        // Upload file
+        async function uploadFile(file) {
+            hideError();
+            
+            // Validate file type
+            const allowedTypes = ['video/mp4', 'video/avi', 'video/quicktime', 'video/x-matroska', 'video/webm'];
+            if (!allowedTypes.some(type => file.type.startsWith('video/'))) {
+                showError('Please select a valid video file');
+                return;
+            }
+
+            // Show file info
+            document.getElementById('fileName').textContent = `📁 ${file.name}`;
+            document.getElementById('fileSize').textContent = `Size: ${formatFileSize(file.size)}`;
+            document.getElementById('fileInfo').classList.add('show');
+
+            // Upload
+            const formData = new FormData();
+            formData.append('video', file);
+
+            try {
+                const response = await fetch('/api/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    uploadedFilename = result.filename;
+                    document.getElementById('detectBtn').disabled = false;
+                    document.getElementById('resultsSection').classList.remove('show');
+                } else {
+                    showError(result.error || 'Upload failed');
+                }
+            } catch (error) {
+                showError('Upload failed: ' + error.message);
+            }
+        }
+
+        // Detect fall
+        async function detectFall() {
+            if (!uploadedFilename) {
+                showError('Please upload a video first');
+                return;
+            }
+
+            hideError();
+            
+            // Show progress
+            document.getElementById('progressSection').classList.add('show');
+            document.getElementById('resultsSection').classList.remove('show');
+            document.getElementById('detectBtn').disabled = true;
+            
+            updateProgress(0, 'Uploading video...');
+
+            try {
+                updateProgress(20, 'Extracting pose keypoints with OpenPose...');
+                
+                const response = await fetch('/api/detect', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        filename: uploadedFilename,
+                        model: selectedModel
+                    })
+                });
+
+                updateProgress(80, 'Running detection model...');
+
+                const result = await response.json();
+
+                if (result.success) {
+                    updateProgress(100, 'Complete!');
+                    
+                    setTimeout(() => {
+                        displayResults(result);
+                        document.getElementById('progressSection').classList.remove('show');
+                        document.getElementById('resetBtn').style.display = 'inline-block';
+                    }, 500);
+                } else {
+                    showError(result.error || 'Detection failed');
+                    document.getElementById('progressSection').classList.remove('show');
+                    document.getElementById('detectBtn').disabled = false;
+                }
+            } catch (error) {
+                showError('Detection failed: ' + error.message);
+                document.getElementById('progressSection').classList.remove('show');
+                document.getElementById('detectBtn').disabled = false;
+            }
+        }
+
+        // Display results
+        function displayResults(result) {
+            const resultsSection = document.getElementById('resultsSection');
+            resultsSection.classList.add('show');
+
+            // Main result
+            const isFall = result.prediction === 1;
+            const label = isFall ? 'FALL DETECTED ⚠️' : 'NO FALL ✅';
+            const confidence = Math.round(result.confidence * 100);
+
+            document.getElementById('resultLabel').textContent = label;
+            document.getElementById('resultLabel').className = 'result-label ' + (isFall ? 'fall' : 'no-fall');
+            
+            document.getElementById('confidenceValue').textContent = confidence + '%';
+            document.getElementById('confidenceBarFill').style.width = confidence + '%';
+            
+            document.getElementById('modelUsed').textContent = result.model_name;
+
+            // Individual results (if available)
+            if (result.individual_predictions) {
+                const individualResults = document.getElementById('individualResults');
+                individualResults.style.display = 'block';
+
+                const detectorResults = document.getElementById('detectorResults');
+                detectorResults.innerHTML = '';
+
+                for (const [name, data] of Object.entries(result.individual_predictions)) {
+                    const div = document.createElement('div');
+                    div.className = 'detector-result';
+                    
+                    const detectorConfidence = Math.round(data.confidence * 100);
+                    const badge = data.prediction === 1 ? 
+                        '<span class="badge fall">FALL</span>' : 
+                        '<span class="badge no-fall">NO FALL</span>';
+                    
+                    div.innerHTML = `
+                        <div>
+                            <span class="detector-name">${formatDetectorName(name)}</span>
+                            ${badge}
+                        </div>
+                        <div class="detector-confidence">${detectorConfidence}%</div>
+                    `;
+                    
+                    detectorResults.appendChild(div);
+                }
+            } else {
+                document.getElementById('individualResults').style.display = 'none';
+            }
+        }
+
+        // Format detector name
+        function formatDetectorName(name) {
+            return name
+                .split('_')
+                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                .join(' ');
+        }
+
+        // Update progress
+        function updateProgress(percent, text) {
+            document.getElementById('progressFill').style.width = percent + '%';
+            document.getElementById('progressFill').textContent = percent + '%';
+            document.getElementById('progressText').textContent = text;
+        }
+
+        // Show error
+        function showError(message) {
+            const errorElement = document.getElementById('errorMessage');
+            errorElement.textContent = '❌ ' + message;
+            errorElement.classList.add('show');
+        }
+
+        // Hide error
+        function hideError() {
+            document.getElementById('errorMessage').classList.remove('show');
+        }
+
+        // Reset form
+        async function resetForm() {
+            // Clean up uploaded file
+            if (uploadedFilename) {
+                try {
+                    await fetch('/api/cleanup', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            filename: uploadedFilename
+                        })
+                    });
+                } catch (error) {
+                    console.error('Cleanup failed:', error);
+                }
+            }
+
+            // Reset UI
+            uploadedFilename = null;
+            document.getElementById('videoInput').value = '';
+            document.getElementById('fileInfo').classList.remove('show');
+            document.getElementById('resultsSection').classList.remove('show');
+            document.getElementById('detectBtn').disabled = true;
+            document.getElementById('resetBtn').style.display = 'none';
+            hideError();
+        }
+
+        // Format file size
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+        }
+
+        // Initialize
+        loadModels();
+    </script>
+</body>
+</html>

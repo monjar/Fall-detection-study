@@ -1,0 +1,7 @@
+{
+  "video": "ManFalling.mp4",
+  "detector": "neural",
+  "prediction": 1,
+  "probability": 0.9969906806945801,
+  "label": "FALL"
+}
