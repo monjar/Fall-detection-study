@@ -3,6 +3,8 @@ data/kth_raw/
 data/pose_keypoints/npz/*.npz
 
 
+web_app/uploads/
+
 models/opencv_pose
 # Byte-compiled / optimized / DLL files
 __pycache__/
