@@ -1,0 +1,111 @@
+{
+  "ensemble_with_neural": {
+    "accuracy": 0.721327967806841,
+    "precision": 0.6453715775749674,
+    "recall": 0.99,
+    "f1_score": 0.7813733228097868,
+    "fall_detection_rate": 0.99,
+    "false_alarm_rate": 0.5506072874493927,
+    "confusion_matrix": [
+      [
+        222,
+        272
+      ],
+      [
+        5,
+        495
+      ]
+    ],
+    "num_samples": 994
+  },
+  "physics": {
+    "accuracy": 0.6619718309859155,
+    "precision": 0.5990338164251208,
+    "recall": 0.992,
+    "f1_score": 0.7469879518072289,
+    "fall_detection_rate": 0.992,
+    "false_alarm_rate": 0.6720647773279352,
+    "confusion_matrix": [
+      [
+        162,
+        332
+      ],
+      [
+        4,
+        496
+      ]
+    ]
+  },
+  "temporal": {
+    "accuracy": 0.6529175050301811,
+    "precision": 0.594859241126071,
+    "recall": 0.972,
+    "f1_score": 0.7380410022779044,
+    "fall_detection_rate": 0.972,
+    "false_alarm_rate": 0.6700404858299596,
+    "confusion_matrix": [
+      [
+        163,
+        331
+      ],
+      [
+        14,
+        486
+      ]
+    ]
+  },
+  "geometry": {
+    "accuracy": 0.7414486921529175,
+    "precision": 0.7927710843373494,
+    "recall": 0.658,
+    "f1_score": 0.7191256830601093,
+    "fall_detection_rate": 0.658,
+    "false_alarm_rate": 0.17408906882591094,
+    "confusion_matrix": [
+      [
+        408,
+        86
+      ],
+      [
+        171,
+        329
+      ]
+    ]
+  },
+  "neural": {
+    "accuracy": 0.5,
+    "precision": 0.5015416238437821,
+    "recall": 0.976,
+    "f1_score": 0.6625933469110659,
+    "fall_detection_rate": 0.976,
+    "false_alarm_rate": 0.9817813765182186,
+    "confusion_matrix": [
+      [
+        9,
+        485
+      ],
+      [
+        12,
+        488
+      ]
+    ]
+  },
+  "anomaly": {
+    "accuracy": 0.5362173038229376,
+    "precision": 0.5543175487465181,
+    "recall": 0.398,
+    "f1_score": 0.46332945285215366,
+    "fall_detection_rate": 0.398,
+    "false_alarm_rate": 0.32388663967611336,
+    "confusion_matrix": [
+      [
+        334,
+        160
+      ],
+      [
+        301,
+        199
+      ]
+    ]
+  }
+}

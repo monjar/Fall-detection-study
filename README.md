@@ -51,11 +51,14 @@ Tested on **6,959 samples** (3,127 Fall + 3,832 No Fall) from Kaggle Real Fall D
 | **🏆 Fine-Tuned Model** | **95.82%** | **94.88%** | **3.42%** | Real Kaggle falls | 231K |
 | **🏆 Ensemble (Rule-based)** | **73.80%** | **86.76%** | **36.30%** | None required | 0 |
 | **Physics Detector Only** | **73.40%** | **94.52%** | **43.06%** | None required | 0 |
-| Geometry Detector Only | 70.80% | 56.16% | 17.79% | None required | 0 |
-| Temporal Detector Only | 48.60% | 78.08% | 74.38% | None required | 0 |
+| **Ensemble + Neural** | **72.13%** | **99.00%** | **55.06%** | KTH + synthetic | 932K |
+| Geometry Detector Only | 74.14% | 65.80% | 17.41% | None required | 0 |
+| Temporal Detector Only | 65.29% | 97.20% | 67.00% | None required | 0 |
 | Improved Hybrid (LSTM) | 47.18% | 52.04% | 92.09% | 2,995 synthetic falls | 932K |
 | Original Hybrid | 46.39% | 48.00% | 94.91% | 597 synthetic falls | 242K |
 | KTH Anomaly (Baseline) | 45.58% | 44.00% | 55.00% | 599 normal sequences | 231K |
+
+**Note:** The "Ensemble + Neural" model includes physics (25%), temporal (20%), geometry (20%), neural network (20%), and anomaly detector (15%) components. It achieves the highest recall (99%) but with increased false alarms compared to the rule-based only ensemble.
 
 ### Why Synthetic Falls Failed
 
@@ -68,13 +71,19 @@ Despite achieving **99.86% validation accuracy**, synthetic fall models only rea
 
 ### Why Ensemble Succeeds
 
-The ensemble approach achieves **73.80% accuracy** without any training:
-
+**Rule-based Ensemble (73.80% accuracy):**
 - ✅ No dependency on synthetic data
 - ✅ Physics-based rules grounded in reality
 - ✅ Combines complementary detection strategies
 - ✅ Interpretable and debuggable
 - ✅ Immediate deployment capability
+
+**Ensemble + Neural Network (72.13% accuracy):**
+- ⚠️ Adding neural components **slightly decreased** accuracy (-1.67%)
+- ✅ **Highest recall** achieved (99.00% - catches virtually all falls)
+- ❌ Significantly higher false alarm rate (55.06% vs 36.30%)
+- ❌ Neural network component overfitted to synthetic data (50% accuracy alone)
+- **Conclusion:** Neural components trained on synthetic falls hurt more than help. The anomaly detector adds minimal value (53.62% accuracy).
 
 ## 🏗️ Architecture
 
@@ -120,8 +129,9 @@ ImprovedHybridModel(
 
 #### C. Ensemble Detector
 
-Combines five complementary detection strategies:
+Combines multiple complementary detection strategies. The ensemble can operate in two modes:
 
+**Basic Mode (Rule-based only, no training required):**
 1. **Physics-Based Detector** (30% weight)
    - Vertical velocity (downward motion)
    - Body angle (tilt from vertical)
@@ -138,13 +148,18 @@ Combines five complementary detection strategies:
    - Pose compactness (1/(area × avg_distance))
    - Vertical spread changes
 
+**Enhanced Mode (with neural model):**
+In addition to the above, when a trained neural model is provided:
+
 4. **Neural Network Detector** (15% weight, optional)
-   - Wrapper for trained models
+   - Wrapper for trained CNN/LSTM models
+   - Uses learned features for classification
 
 5. **Anomaly Detector** (10% weight, optional)
    - Reconstruction error from autoencoder
+   - Detects unusual patterns as potential falls
 
-**Voting Strategy:** Weighted voting with configurable thresholds
+**Voting Strategy:** Weighted voting with configurable thresholds. The ensemble achieves 73.80% accuracy using only the 3 rule-based detectors, and can potentially improve with neural components.
 
 ### 3. Data Processing
 
@@ -305,6 +320,29 @@ Confusion Matrix:
               No Fall  Fall
 Actual No Fall   160   121
        Fall       12   207
+```
+
+#### Ensemble + Neural Network
+```
+Accuracy:           72.13%
+Precision:          64.54%
+Recall (Sensitivity): 99.00%  ← Highest recall!
+F1 Score:           78.14%
+Specificity:        44.94%
+False Alarm Rate:   55.06%
+
+Confusion Matrix:
+                Predicted
+              No Fall  Fall
+Actual No Fall   222   272
+       Fall       5   495
+
+Individual Component Performance:
+  Physics:   66.20% accuracy, 99.20% recall
+  Temporal:  65.29% accuracy, 97.20% recall
+  Geometry:  74.14% accuracy, 65.80% recall
+  Neural:    50.00% accuracy, 97.60% recall (overfitted)
+  Anomaly:   53.62% accuracy, 39.80% recall
 ```
 
 #### Fine-Tuned Model

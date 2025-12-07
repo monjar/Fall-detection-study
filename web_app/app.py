@@ -46,7 +46,7 @@ app.secret_key = 'fall-detection-secret-key-change-in-production'
 MODEL_CONFIGS = {
     'ensemble': {
         'name': 'Ensemble Detector',
-        'description': 'Combines physics, temporal, and geometry detectors (no neural network needed)',
+        'description': 'Combines physics, temporal, and geometry detectors with optional neural network components',
         'detector_type': 'ensemble',
         'model_path': None,
         'requires_model': False,
